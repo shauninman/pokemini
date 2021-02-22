@@ -35,6 +35,8 @@
 #include "Video_x3.c"
 #include "PokeMini_BG3.c"
 
+#include <mmenu.h>
+
 const char *AppName = "PokeMini " PokeMini_Version " Trimui";
 
 static SDL_Rect rct;
@@ -310,6 +312,7 @@ void menuloop()
 
 char home_path[256];
 char conf_path[512];
+char save_path[256];
 
 // Main function
 int main(int argc, char **argv)
@@ -330,13 +333,9 @@ int main(int argc, char **argv)
 	
 	snprintf(home_path, sizeof(home_path), "%s/.pokemini", getenv("HOME"));
 	snprintf(conf_path, sizeof(conf_path), "%s/pokemini.cfg", home_path);
-	if (access( home_path, F_OK ) == -1)
-	{ 
-		printf("create home_path: %s\n", home_path);
+	if (access( home_path, F_OK ) == -1) {
 		mkdir(home_path, 0755);
 	}
-	printf("home_path: %s\n", home_path);
-	printf("conf_path: %s\n", conf_path);
 	
 	CommandLineInit();
 	
@@ -347,6 +346,13 @@ int main(int argc, char **argv)
 		PrintHelpUsage(stdout);
 		return 1;
 	}
+
+	strcpy(save_path, home_path);
+	char* tmp = save_path;
+	tmp += strlen(tmp);
+	strcpy(tmp, strrchr(CommandLine.min_file, '/'));
+	tmp += strlen(tmp);
+	strcpy(tmp, ".st%i");
 
 	// Initialize SDL
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_JOYSTICK) < 0) {
@@ -465,7 +471,33 @@ int main(int argc, char **argv)
 		while (SDL_PollEvent(&event)) handleevents(&event);
 
 		// Menu
-		if (UI_Status == UI_STATUS_MENU) menuloop();
+		if (UI_Status == UI_STATUS_MENU) {
+			enablesound(0);
+			MenuReturnStatus status = ShowMenu(CommandLine.min_file, save_path, rl_screen);
+			UI_Status = UI_STATUS_GAME;
+			if (status!=kStatusExitGame) enablesound(CommandLine.sound);
+
+			if (status==kStatusExitGame) {
+				emurunning = 0;
+			}
+			else if (status==kStatusOpenMenu) {
+				UI_Status = UI_STATUS_MENU;
+				menuloop();
+			}
+			else if (status>=kStatusLoadSlot) {
+				int slot = status - kStatusLoadSlot;
+				char tmp[256];
+				sprintf(tmp, save_path, slot);
+				PokeMini_LoadSSFile(tmp);
+			}
+			else if (status>=kStatusSaveSlot) {
+				int slot = status - kStatusSaveSlot;
+				char tmp[256];
+				sprintf(tmp, save_path, slot);
+				PokeMini_SaveSSFile(tmp, CommandLine.min_file);
+			}
+			Clear_Screen();
+		}
 	}
 
 	// Disable sound & free UI

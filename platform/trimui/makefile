@@ -16,6 +16,7 @@ FLAGS_OPT = -Ofast -fdata-sections -ffunction-sections -fno-common -flto -fwhole
 
 CFLAGS	= $(FLAGS_OPT) -Wall $(INCLUDE) -DPERFORMANCE -DTRIMUI -DNO_SCANDIRS -DSIMPLE_CONTROLS
 SLFLAGS = -nodefaultlibs -lc -lgcc -lm -lSDL -lz -no-pie -Wl,--as-needed -Wl,--gc-sections -s -flto
+SLFLAGS += -lmmenu -lSDL_TTF -lSDL_Image
 
 ifeq ($(PROFILE), YES)
 CFLAGS 		+= -fprofile-generate="/media/QEMU VVFAT"
