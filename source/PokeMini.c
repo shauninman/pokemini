@@ -978,6 +978,9 @@ int PokeMini_LoadROM(const char *filename)
 	if (!CommandLine.eeprom_share) {
 #ifdef _TINSPIRE
 		sprintf(CommandLine.eeprom_file, "%s.eep.tns", CommandLine.min_file);
+#elif TRIMUI
+		char* min_name = strrchr(CommandLine.min_file, '/') + 1;
+		sprintf(CommandLine.eeprom_file, "%s/.pokemini/%s.eep", getenv("HOME"), min_name);
 #else
 		sprintf(CommandLine.eeprom_file, "%s.eep", CommandLine.min_file);
 #endif
@@ -1043,6 +1046,9 @@ int PokeMini_LoadFromCommandLines(const char *nobios, const char *noeeprom)
 		// Individual EEPROM
 #ifdef _TINSPIRE
 		sprintf(CommandLine.eeprom_file, "%s.eep.tns", CommandLine.min_file);
+#elif TRIMUI
+		char* min_name = strrchr(CommandLine.min_file, '/') + 1;
+		sprintf(CommandLine.eeprom_file, "%s/.pokemini/%s.eep", getenv("HOME"), min_name);
 #else
 		sprintf(CommandLine.eeprom_file, "%s.eep", CommandLine.min_file);
 #endif

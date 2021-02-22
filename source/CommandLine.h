@@ -70,6 +70,7 @@ typedef struct {
 	const char *pokefile;
 	const char *conffile;
 	const TCommandLineCustom *confcustom;
+	int scaling;
 } TCommandLine;
 
 // Extern command line structure

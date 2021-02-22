@@ -77,12 +77,23 @@ void CommandLineInit(void)
 	CommandLine.keyb_a[1] = PMKEYB_LCTRL;	// A:     X
 	CommandLine.keyb_a[2] = PMKEYB_LALT;	// B:     Z
 	CommandLine.keyb_a[3] = PMKEYB_LSHIFT;	// C:     C
-	CommandLine.keyb_a[4] = PMKEYB_UP;	// Up:    UP
+	CommandLine.keyb_a[4] = PMKEYB_UP;		// Up:    UP
 	CommandLine.keyb_a[5] = PMKEYB_DOWN;	// Down:  DOWN
 	CommandLine.keyb_a[6] = PMKEYB_LEFT;	// Left:  LEFT
 	CommandLine.keyb_a[7] = PMKEYB_RIGHT;	// Right: RIGHT
 	CommandLine.keyb_a[8] = PMKEYB_SPACE;	// Power: E
-	CommandLine.keyb_a[9] = PMKEYB_TAB;	// Shake: A
+	CommandLine.keyb_a[9] = PMKEYB_TAB;		// Shake: A
+#elif TRIMUI
+	CommandLine.keyb_a[0] = PMKEYB_ESCAPE;		// Menu:  MENU
+	CommandLine.keyb_a[1] = PMKEYB_SPACE;		// A:     A
+	CommandLine.keyb_a[2] = PMKEYB_LCTRL;		// B:     B
+	CommandLine.keyb_a[3] = PMKEYB_BACKSPACE;	// C:     R
+	CommandLine.keyb_a[4] = PMKEYB_UP;			// Up:    UP
+	CommandLine.keyb_a[5] = PMKEYB_DOWN;		// Down:  DOWN
+	CommandLine.keyb_a[6] = PMKEYB_LEFT;		// Left:  LEFT
+	CommandLine.keyb_a[7] = PMKEYB_RIGHT;		// Right: RIGHT
+	CommandLine.keyb_a[8] = PMKEYB_NONE;		// Power: NONE
+	CommandLine.keyb_a[9] = PMKEYB_TAB;			// Shake: L
 #else
 	CommandLine.keyb_a[0] = PMKEYB_ESCAPE;	// Menu:  ESCAPE
 	CommandLine.keyb_a[1] = PMKEYB_X;	// A:     X
@@ -118,6 +129,7 @@ void CommandLineInit(void)
 #else
 	CommandLine.synccycles = 8;	// Sync cycles to 8 (Accurate)
 #endif
+	CommandLine.scaling = 0; // TRIMUI
 }
 
 int CommandLineCustomArgs(int argc, char **argv, int *extra, const TCommandLineCustom *custom)
@@ -354,6 +366,7 @@ int CommandLineConfFile(const char *filename, const char *platcfgfile, const TCo
 			else if (!strcasecmp(key, "synccycles")) CommandLine.synccycles = BetweenNum(atoi_Ex(value, 8), 8, 512);
 			else if (!strcasecmp(key, "lcdcontrast")) CommandLine.lcdcontrast = BetweenNum(atoi_Ex(value, 64), 0, 100);
 			else if (!strcasecmp(key, "lcdbright")) CommandLine.lcdbright = BetweenNum(atoi_Ex(value, 0), -100, 100);
+			else if (!strcasecmp(key, "scaling")) CommandLine.scaling = Str2Bool(value) ? 1 : 0; // TRIMUI
 			else PokeDPrint(POKEMSG_ERR, "Conf warning: Unknown '%s' key\n", key);
 		}
 		fclose(fi);
@@ -474,6 +487,7 @@ int CommandLineConfSave(void)
 			fprintf(fo, "synccycles=%d\n", CommandLine.synccycles);
 			fprintf(fo, "lcdcontrast=%d\n", CommandLine.lcdcontrast);
 			fprintf(fo, "lcdbright=%d\n", CommandLine.lcdbright);
+			fprintf(fo, "scaling=%d\n", CommandLine.scaling);
 			fclose(fo);
 		}
 	}

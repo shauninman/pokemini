@@ -626,7 +626,11 @@ int UIItems_MainMenuC(int index, int reason)
 				UIMenu_BeginMessage();
 				UIMenu_SetMessage("Loading state...", 1);
 				UIMenu_SetMessage("", 1);
+#ifdef TRIMUI
+				sprintf(tmp, "%s/.pokemini/%s.st%d", getenv("HOME"), strrchr(CommandLine.min_file, '/') + 1, UIMenu_Savestate);
+#else
 				sprintf(tmp, "%s.st%d", CommandLine.min_file, UIMenu_Savestate);
+#endif			
 				if (PokeMini_LoadSSFile(tmp)) {
 					UIMenu_SetMessage("State loaded!", 0);
 					UIMenu_EndMessage(60);
@@ -639,7 +643,11 @@ int UIItems_MainMenuC(int index, int reason)
 				UIMenu_BeginMessage();
 				UIMenu_SetMessage("Saving state...", 1);
 				UIMenu_SetMessage("", 1);
+#ifdef TRIMUI
+				sprintf(tmp, "%s/.pokemini/%s.st%d", getenv("HOME"), strrchr(CommandLine.min_file, '/') + 1, UIMenu_Savestate);
+#else
 				sprintf(tmp, "%s.st%d", CommandLine.min_file, UIMenu_Savestate);
+#endif		
 				if (PokeMini_SaveSSFile(tmp, CommandLine.min_file)) {
 					UIMenu_SetMessage("State saved!", 0);
 					UIMenu_EndMessage(60);
