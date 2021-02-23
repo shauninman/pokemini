@@ -473,7 +473,7 @@ int main(int argc, char **argv)
 		// Menu
 		if (UI_Status == UI_STATUS_MENU) {
 			enablesound(0);
-			MenuReturnStatus status = ShowMenu(CommandLine.min_file, save_path, rl_screen);
+			MenuReturnStatus status = ShowMenu(CommandLine.min_file, save_path, rl_screen, kMenuEventKeyDown);
 			UI_Status = UI_STATUS_GAME;
 			if (status!=kStatusExitGame) enablesound(CommandLine.sound);
 
