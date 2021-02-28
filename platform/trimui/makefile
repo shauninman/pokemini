@@ -15,8 +15,8 @@ INCLUDE = $(SYSROOT)/usr/include
 FLAGS_OPT = -Ofast -fdata-sections -ffunction-sections -fno-common -flto -fwhole-program -fsingle-precision-constant -fno-PIC -ftree-vectorize
 
 CFLAGS	= $(FLAGS_OPT) -Wall $(INCLUDE) -DPERFORMANCE -DTRIMUI -DNO_SCANDIRS -DSIMPLE_CONTROLS
-SLFLAGS = -nodefaultlibs -lc -lgcc -lm -lSDL -lz -no-pie -Wl,--as-needed -Wl,--gc-sections -s -flto
-SLFLAGS += -lmmenu -lSDL_TTF -lSDL_Image
+SLFLAGS = -nodefaultlibs -lc -lgcc -lm -lSDL -lz -no-pie -Wl,--gc-sections -s -flto
+SLFLAGS += -lSDL_TTF -lSDL_Image -ldl # -lmmenu
 
 ifeq ($(PROFILE), YES)
 CFLAGS 		+= -fprofile-generate="/media/QEMU VVFAT"

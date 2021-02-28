@@ -313,6 +313,7 @@ void menuloop()
 char home_path[256];
 char conf_path[512];
 char save_path[256];
+static void* mmenu = NULL;
 
 // Main function
 int main(int argc, char **argv)
@@ -353,6 +354,12 @@ int main(int argc, char **argv)
 	strcpy(tmp, strrchr(CommandLine.min_file, '/'));
 	tmp += strlen(tmp);
 	strcpy(tmp, ".st%i");
+	
+	mmenu = dlopen("libmmenu.so", RTLD_NOW);
+    if (!mmenu) {
+    	printf("Cannot open mmenu: %s\n", dlerror());
+		fflush(stdout);
+    }
 
 	// Initialize SDL
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_JOYSTICK) < 0) {
@@ -473,28 +480,36 @@ int main(int argc, char **argv)
 		// Menu
 		if (UI_Status == UI_STATUS_MENU) {
 			enablesound(0);
-			MenuReturnStatus status = ShowMenu(CommandLine.min_file, save_path, rl_screen, kMenuEventKeyDown);
-			UI_Status = UI_STATUS_GAME;
-			if (status!=kStatusExitGame) enablesound(CommandLine.sound);
+			if (mmenu) {
+				ShowMenu_t ShowMenu = (ShowMenu_t)dlsym(mmenu, "ShowMenu");
+				
+				MenuReturnStatus status = ShowMenu(CommandLine.min_file, save_path, rl_screen, kMenuEventKeyDown);
+				
+				UI_Status = UI_STATUS_GAME;
+				if (status!=kStatusExitGame) enablesound(CommandLine.sound);
 
-			if (status==kStatusExitGame) {
-				emurunning = 0;
+				if (status==kStatusExitGame) {
+					emurunning = 0;
+				}
+				else if (status==kStatusOpenMenu) {
+					UI_Status = UI_STATUS_MENU;
+					menuloop();
+				}
+				else if (status>=kStatusLoadSlot) {
+					int slot = status - kStatusLoadSlot;
+					char tmp[256];
+					sprintf(tmp, save_path, slot);
+					PokeMini_LoadSSFile(tmp);
+				}
+				else if (status>=kStatusSaveSlot) {
+					int slot = status - kStatusSaveSlot;
+					char tmp[256];
+					sprintf(tmp, save_path, slot);
+					PokeMini_SaveSSFile(tmp, CommandLine.min_file);
+				}
 			}
-			else if (status==kStatusOpenMenu) {
-				UI_Status = UI_STATUS_MENU;
+			else {
 				menuloop();
-			}
-			else if (status>=kStatusLoadSlot) {
-				int slot = status - kStatusLoadSlot;
-				char tmp[256];
-				sprintf(tmp, save_path, slot);
-				PokeMini_LoadSSFile(tmp);
-			}
-			else if (status>=kStatusSaveSlot) {
-				int slot = status - kStatusSaveSlot;
-				char tmp[256];
-				sprintf(tmp, save_path, slot);
-				PokeMini_SaveSSFile(tmp, CommandLine.min_file);
 			}
 			Clear_Screen();
 		}
@@ -518,6 +533,7 @@ int main(int argc, char **argv)
 	PokeMini_VideoPalette_Free();
 	PokeMini_Destroy();
 
+	if (mmenu) dlclose(mmenu);
 	return 0;
 }
 
