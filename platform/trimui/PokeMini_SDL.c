@@ -355,11 +355,7 @@ int main(int argc, char **argv)
 	tmp += strlen(tmp);
 	strcpy(tmp, ".st%i");
 	
-	mmenu = dlopen("libmmenu.so", RTLD_NOW);
-    if (!mmenu) {
-    	printf("Cannot open mmenu: %s\n", dlerror());
-		fflush(stdout);
-    }
+	mmenu = dlopen("libmmenu.so", RTLD_LAZY);
 
 	// Initialize SDL
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_JOYSTICK) < 0) {
@@ -532,8 +528,7 @@ int main(int argc, char **argv)
 	printf("Shutdown emulator...\n");
 	PokeMini_VideoPalette_Free();
 	PokeMini_Destroy();
-
-	if (mmenu) dlclose(mmenu);
+	
 	return 0;
 }
 
