@@ -1,6 +1,6 @@
 # PokeMini Makefile for SDL
 
-CROSS_COMPILE := /opt/trimui/bin/arm-unknown-linux-gnueabi-
+CROSS_COMPILE := /opt/trimui-toolchain/bin/arm-buildroot-linux-gnueabi-
 
 CC = $(CROSS_COMPILE)gcc
 LD = $(CROSS_COMPILE)gcc
@@ -16,7 +16,7 @@ FLAGS_OPT = -Ofast -fdata-sections -ffunction-sections -fno-common -flto -fwhole
 
 CFLAGS	= $(FLAGS_OPT) -Wall $(INCLUDE) -DPERFORMANCE -DTRIMUI -DNO_SCANDIRS -DSIMPLE_CONTROLS
 SLFLAGS = -nodefaultlibs -lc -lgcc -lm -lSDL -lz -no-pie -Wl,--gc-sections -s -flto
-SLFLAGS += -lSDL_TTF -lSDL_Image -ldl # -lmmenu
+SLFLAGS += -lSDL_ttf -lSDL_image -ldl # -lmmenu
 
 ifeq ($(PROFILE), YES)
 CFLAGS 		+= -fprofile-generate="/media/QEMU VVFAT"

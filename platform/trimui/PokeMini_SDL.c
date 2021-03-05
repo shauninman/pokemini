@@ -35,6 +35,7 @@
 #include "Video_x3.c"
 #include "PokeMini_BG3.c"
 
+#include <dlfcn.h>
 #include <mmenu.h>
 
 const char *AppName = "PokeMini " PokeMini_Version " Trimui";
