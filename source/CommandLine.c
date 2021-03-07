@@ -45,7 +45,7 @@ void CommandLineInit(void)
 #ifdef PERFORMANCE
 	CommandLine.sound = MINX_AUDIO_GENERATED;
 	CommandLine.piezofilter = 0;	// Piezo Filter
-	CommandLine.lcdfilter = 0;	// LCD Filter
+	CommandLine.lcdfilter = 1;	// LCD Filter
 	CommandLine.lcdmode = 1;	// LCD Mode
 #else
 	CommandLine.sound = MINX_AUDIO_EMULATED;
@@ -54,7 +54,7 @@ void CommandLineInit(void)
 	CommandLine.lcdmode = 0;	// LCD Mode
 #endif
 	CommandLine.low_battery = 0;	// Low Battery
-	CommandLine.palette = 0;	// Palette Index
+	CommandLine.palette = 1;	// Palette Index
 	CommandLine.rumblelvl = 3;	// Rumble level
 	CommandLine.joyenabled = 0;	// Joystick Enabled
 	CommandLine.joyid = 0;		// Joystick ID
